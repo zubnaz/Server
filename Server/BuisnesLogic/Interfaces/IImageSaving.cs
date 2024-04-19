@@ -9,7 +9,7 @@ namespace BuisnesLogic.Interfaces
 {
     public interface IImageSaving
     {
-        string Save(IFormFile file);
+        Task<string> Save(IFormFile file);
         void Delete(string name);
     }
 }

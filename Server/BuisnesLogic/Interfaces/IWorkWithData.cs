@@ -11,8 +11,8 @@ namespace BuisnesLogic.Interfaces
 {
     public interface IWorkWithData
     {
-        Category Create(CreateCategoryDto model);
-        Category Update(UpdateCategoryDto model);
+        Task<Category> Create(CreateCategoryDto model);
+        Task<Category> Update(UpdateCategoryDto model);
         void Delete(int id);
     }
 }

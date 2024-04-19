@@ -1,6 +1,8 @@
 ﻿using BuisnesLogic.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +27,7 @@ namespace BuisnesLogic.Helpers
             }
         }
 
-        public string Save(IFormFile file)
+        public async Task<string> Save(IFormFile file)
         {
             string name = Guid.NewGuid().ToString();
             string extension = ".jpg";
@@ -33,10 +35,22 @@ namespace BuisnesLogic.Helpers
 
             string fullPath = Path.Combine(storage.Value.root, fullName);
 
-            using(FileStream fs = new FileStream(fullPath,FileMode.Create))
-            {
-                file.CopyTo(fs);
-            }
+            using MemoryStream ms = new MemoryStream();
+            await file.CopyToAsync(ms);
+
+            using Image image = Image.Load(ms.ToArray());
+
+            image.Mutate(
+                x => x.Resize(new ResizeOptions()
+                {
+                    Size = new Size(1200),
+                    Mode = ResizeMode.Max
+                })
+                );
+            using var stream = System.IO.File.Create(fullPath);
+            await image.SaveAsJpegAsync(stream);
+
+
             return fullName;
         }
     }

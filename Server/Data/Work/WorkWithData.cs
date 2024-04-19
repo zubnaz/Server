@@ -23,20 +23,20 @@ namespace Data.Work
             this.imageSaving = imageSaving;
         }
 
-        public Category Create(CreateCategoryDto model)
+        public async Task<Category> Create(CreateCategoryDto model)
         {
             var newCategory = new Category()
             {
                 Name = model.Name,
                 Description = model.Description,
-                Image = imageSaving.Save(model.Image)
+                Image = await imageSaving.Save(model.Image)
             };
             _userDbContext.Categories.Add(newCategory);
             _userDbContext.SaveChanges();
             return newCategory;
         }
 
-        public Category Update(UpdateCategoryDto model)
+        public async Task<Category> Update(UpdateCategoryDto model)
         {
             var category = _userDbContext.Categories.FirstOrDefault(m => m.Id == model.Id);
             if(category == null) { return null; }
@@ -46,7 +46,7 @@ namespace Data.Work
             category.Description = String.IsNullOrEmpty(model.Description) ? category.Description : model.Description;
             if (model.Image != null)
             {
-                category.Image = imageSaving.Save(model.Image);
+                category.Image =await imageSaving.Save(model.Image);
             }
             _userDbContext.Update(category);
             _userDbContext.SaveChanges();

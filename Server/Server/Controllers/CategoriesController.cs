@@ -25,15 +25,15 @@ namespace Server.Controllers
             return Ok(list);
         }
         [HttpPost]
-        public IActionResult Create(CreateCategoryDto model)
+        public async Task<IActionResult> Create(CreateCategoryDto model)
         {
-            var newCategory = workWithData.Create(model);
+            var newCategory = await workWithData.Create(model);
             return Ok(newCategory);
         }
         [HttpPut]
-        public IActionResult Update(UpdateCategoryDto model)
+        public async Task<IActionResult> Update(UpdateCategoryDto model)
         {
-            var updateCategory = workWithData.Update(model);
+            var updateCategory = await workWithData.Update(model);
             return Ok(updateCategory);
         }
         [HttpDelete]
