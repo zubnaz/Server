@@ -68,14 +68,16 @@ namespace Data.Seeder
                     {
                         Name = "Куртка баті",
                         Description = "куртка баті",
-                        Image = "kurtka.jpg"
+                        Image = "kurtka.jpg",
+                        UserId = 2
                         
                     };
                     var futbolki = new Category
                     {
                         Name = "Футболки",
                         Description = "Класна футболка",
-                        Image = "futbolka.jpg"
+                        Image = "futbolka.jpg",
+                        UserId = 2
 
                     };
                     context.Categories.Add(kurtki);

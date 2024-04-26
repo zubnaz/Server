@@ -43,6 +43,7 @@ namespace Data.DBContext
                     .HasForeignKey(u => u.UserId)
                     .IsRequired();
             });
+            builder.Entity<UserEntity>().HasMany(u => u.Categories).WithOne(c=>c.User).HasForeignKey(c=>c.UserId).IsRequired();
         }
     }
 }

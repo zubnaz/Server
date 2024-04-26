@@ -17,5 +17,6 @@ namespace Data.Entity
         [StringLength(100)]
         public string Image { get; set; }
         public virtual ICollection<UserRoleEntity> UserRoles { get; set; }
+        public ICollection<Category> Categories { get; set; }
     }
 }

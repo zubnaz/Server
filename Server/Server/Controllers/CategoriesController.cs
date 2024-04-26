@@ -18,20 +18,20 @@ namespace Server.Controllers
             this.workWithData = workWithData;
         }
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var list = _userDbContext.Categories.ToList();
+            var list =await workWithData.Get();
             Console.WriteLine("--- New connect ---");
             return Ok(list);
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateCategoryDto model)
+        public async Task<IActionResult> Create([FromForm]CreateCategoryDto model)
         {
             var newCategory = await workWithData.Create(model);
             return Ok(newCategory);
         }
         [HttpPut]
-        public async Task<IActionResult> Update(UpdateCategoryDto model)
+        public async Task<IActionResult> Update([FromForm] UpdateCategoryDto model)
         {
             var updateCategory = await workWithData.Update(model);
             return Ok(updateCategory);

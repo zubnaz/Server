@@ -1,4 +1,6 @@
-﻿using BuisnesLogic.Dto;
+﻿using BuisnesLogic.Constants;
+using BuisnesLogic.Dto;
+using BuisnesLogic.Helpers;
 using BuisnesLogic.Interfaces;
 using BuisnesLogic.Sevices;
 using Data.Entity;
@@ -13,21 +15,26 @@ namespace Server.Controllers
     public class AccountController : ControllerBase
     {
         //private readonly IAccountServices accountServices;
-        public AccountController(UserManager<UserEntity> userManager, IJwtTokenService jwtTokenService) {
+        public AccountController(UserManager<UserEntity> userManager, IJwtTokenService jwtTokenService,IImageSaving imageSaving,IWorkWithData workWithData) {
         //this.accountServices = accountServices;
             _userManager = userManager;
             _jwtTokenService = jwtTokenService;
+            this.imageSaving = imageSaving;
+            this.workWithData = workWithData;
         }
-        /*[HttpPost]
-        public async Task<IActionResult> Register(RegisterDto register)
-        {
-            await accountServices.Register(register);
-            return Ok();
-        }*/
+        
         private readonly UserManager<UserEntity> _userManager;
         private readonly IJwtTokenService _jwtTokenService;
+        private readonly IImageSaving imageSaving;
+        private readonly IWorkWithData workWithData;
 
-
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromForm]RegisterDto register)
+        {
+            //await accountServices.Register(register);
+            await workWithData.Resgister(register);
+            return Ok();
+        }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
