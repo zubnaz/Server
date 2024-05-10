@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20240410182210_Initial")]
+    [Migration("20240503183321_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -48,7 +48,12 @@ namespace Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Categories");
                 });
@@ -270,6 +275,17 @@ namespace Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Data.Entity.Category", b =>
+                {
+                    b.HasOne("Data.Entity.UserEntity", "User")
+                        .WithMany("Categories")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Data.Entity.UserRoleEntity", b =>
                 {
                     b.HasOne("Data.Entity.RoleEntity", "Role")
@@ -332,6 +348,8 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entity.UserEntity", b =>
                 {
+                    b.Navigation("Categories");
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

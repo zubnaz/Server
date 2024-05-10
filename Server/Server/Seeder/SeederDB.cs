@@ -69,7 +69,7 @@ namespace Data.Seeder
                         Name = "Куртка баті",
                         Description = "куртка баті",
                         Image = "kurtka.jpg",
-                        UserId = 2
+                        UserId = 1
                         
                     };
                     var futbolki = new Category
@@ -77,7 +77,7 @@ namespace Data.Seeder
                         Name = "Футболки",
                         Description = "Класна футболка",
                         Image = "futbolka.jpg",
-                        UserId = 2
+                        UserId = 1
 
                     };
                     context.Categories.Add(kurtki);

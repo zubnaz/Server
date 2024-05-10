@@ -45,6 +45,7 @@ namespace BuisnesLogic.Sevices
                 expires: DateTime.Now.AddDays(10),
                 claims: claims
             );
+            
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
     }

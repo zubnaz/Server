@@ -11,10 +11,11 @@ namespace BuisnesLogic.Interfaces
 {
     public interface IWorkWithData
     {
-        Task Resgister(RegisterDto register);
-        Task<Category> Create(CreateCategoryDto model);
-        Task<Category> Update(UpdateCategoryDto model);
-        Task<List<ShowCategoryDto>> Get();
+        Task Register(RegisterDto register);
+        Task<ShowCategoryDto> Create(CreateCategoryDto model, long user);
+        Task<ShowCategoryDto> Update(UpdateCategoryDto model);
+        Task<List<ShowCategoryDto>> Get(UserEntity user);
         void Delete(int id);
+        Task<UserDto> GetInfoAboutUser(UserEntity user);
     }
 }

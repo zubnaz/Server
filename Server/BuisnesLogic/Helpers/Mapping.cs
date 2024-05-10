@@ -16,6 +16,8 @@ namespace BuisnesLogic.Helpers
             CreateMap<Category,ShowCategoryDto>().ReverseMap().ForPath(x=>x.User.Email,opt=>opt.MapFrom(y=>y.User));
             CreateMap<Category, CreateCategoryDto>().ReverseMap();
             CreateMap<Category, UpdateCategoryDto>().ReverseMap();
+            CreateMap<UserEntity,UserDto>().ReverseMap();
         }
+
     }
 }

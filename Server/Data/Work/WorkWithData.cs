@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,26 +31,31 @@ namespace Data.Work
             this._userManager = _userManager;
         }
 
-        public async Task<List<ShowCategoryDto>> Get()
+        public async Task<List<ShowCategoryDto>> Get(UserEntity user)
         {
-            var categories = mapper.Map<List<ShowCategoryDto>>(_userDbContext.Categories.Include(x=>x.User).ToList());
-            foreach (var item in _userDbContext.Categories.Include(x=>x.User).ToList())
+            List<ShowCategoryDto> categories;
+            if (await _userManager.IsInRoleAsync(user, Roles.Admin))
             {
-                Console.WriteLine(item.User.Email);
+                categories = mapper.Map<List<ShowCategoryDto>>(_userDbContext.Categories.Include(x => x.User).ToList());
+            }
+            else
+            {
+                categories = mapper.Map<List<ShowCategoryDto>>(_userDbContext.Categories.Include(x => x.User).Where(x=>x.UserId==user.Id).ToList());
             }
             return categories;
         }
 
-        public async Task<Category> Create(CreateCategoryDto model)
+        public async Task<ShowCategoryDto> Create(CreateCategoryDto model, long user)
         {
             var newCategory = mapper.Map<Category>(model);
+            newCategory.UserId = user;
             newCategory.Image = await imageSaving.Save(model.Image);
             _userDbContext.Categories.Add(newCategory);
             _userDbContext.SaveChanges();
-            return newCategory;
+            return mapper.Map<ShowCategoryDto>(newCategory);
         }
 
-        public async Task<Category> Update(UpdateCategoryDto model)
+        public async Task<ShowCategoryDto> Update(UpdateCategoryDto model)
         {
             var category = _userDbContext.Categories.FirstOrDefault(m => m.Id == model.Id);
             if(category == null) { return null; }
@@ -63,7 +69,7 @@ namespace Data.Work
             }
             _userDbContext.Update(category);
             _userDbContext.SaveChanges();
-            return category;
+            return mapper.Map<ShowCategoryDto>(category);
         }
         public void Delete(int id)
         {
@@ -75,7 +81,7 @@ namespace Data.Work
             }
         }
 
-        public async Task Resgister(RegisterDto register)
+        public async Task Register(RegisterDto register)
         {
             UserEntity newUser = new UserEntity()
             {
@@ -87,12 +93,34 @@ namespace Data.Work
             };
             
             var result = await _userManager.CreateAsync(newUser,register.Password);
-            _userManager.AddToRoleAsync(newUser, Roles.User);
+            await _userManager.AddToRoleAsync(newUser, Roles.User);
             Console.WriteLine("Errors :");
             foreach (var item in result.Errors.ToList())
             {
                 Console.WriteLine(item.Code+" - "+item.Description);
             }
+        }
+        public async Task<UserDto> GetInfoAboutUser(UserEntity user)
+        {
+            try
+            {
+                UserDto userDto = new UserDto()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Image = user.Image,
+                    Role = _userDbContext.UserRoles.Include(x => x.Role).FirstOrDefault(x => x.UserId == user.Id).Role.Name
+                };
+                return userDto;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+            
+           
         }
     }
 }

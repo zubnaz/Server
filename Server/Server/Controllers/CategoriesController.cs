@@ -1,46 +1,70 @@
-﻿using BuisnesLogic.Dto;
+﻿using BuisnesLogic.Constants;
+using BuisnesLogic.Dto;
 using BuisnesLogic.Interfaces;
-using Data.DBContext;
+using Data.Entity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Server.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoriesController : Controller
     {
-        private readonly UserDbContext _userDbContext;
         private readonly IWorkWithData workWithData;
+        private readonly UserManager<UserEntity> _userManager;
 
-        public CategoriesController(UserDbContext _userDbContext,IWorkWithData workWithData)
+        public CategoriesController(IWorkWithData workWithData, UserManager<UserEntity> userManager)
         {
-            this._userDbContext = _userDbContext;
             this.workWithData = workWithData;
+            this._userManager = userManager;
         }
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var list =await workWithData.Get();
-            Console.WriteLine("--- New connect ---");
-            return Ok(list);
+            var email = User.Claims.FirstOrDefault().Value;
+            var user = await _userManager.FindByEmailAsync(email);
+
+            var list = await workWithData.Get(user);
+                Console.WriteLine("--- New connect ---");
+                return Ok(list);
+
         }
         [HttpPost]
         public async Task<IActionResult> Create([FromForm]CreateCategoryDto model)
         {
-            var newCategory = await workWithData.Create(model);
+            var email = User.Claims.FirstOrDefault().Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            var newCategory = await workWithData.Create(model, user.Id);
             return Ok(newCategory);
         }
         [HttpPut]
         public async Task<IActionResult> Update([FromForm] UpdateCategoryDto model)
         {
-            var updateCategory = await workWithData.Update(model);
+            //var email = User.Claims.FirstOrDefault().Value;
+            //var user = await _userManager.FindByEmailAsync(email);
+            //if (await _userManager.IsInRoleAsync(user, Roles.Admin))
+            //{
+                var updateCategory = await workWithData.Update(model);
             return Ok(updateCategory);
+            //}
+            //return BadRequest("You have no right!");
         }
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            workWithData.Delete(id);
-            return Ok();
+            //var email = User.Claims.FirstOrDefault().Value;
+            //var user = await _userManager.FindByEmailAsync(email);
+            //if (await _userManager.IsInRoleAsync(user, Roles.Admin))
+            //{
+                workWithData.Delete(id);
+                return Ok();
+            //}
+            //return BadRequest("You have no right!");
         }
     }
 }

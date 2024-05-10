@@ -7,6 +7,8 @@
     <InvariantGlobalization>false</InvariantGlobalization>
     <UserSecretsId>5604aabd-1956-4641-985c-923e4534a068</UserSecretsId>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+	 <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	 <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

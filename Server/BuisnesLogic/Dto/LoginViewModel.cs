@@ -8,8 +8,16 @@ namespace BuisnesLogic.Dto
 {
     public class LoginViewModel
     {
-            public string Email { get; set; }
-            public string Password { get; set; }
+        /// <summary>
+        /// Пошта користувача
+        /// </summary>
+        /// <example>Nazariy_Zubar@gmail.com</example>
+        public string Email { get; set; }
+        /// <summary>
+        /// Пароль користувача
+        /// </summary>
+        /// <example>Nazar-345</example>
+        public string Password { get; set; }
 
     }
 }
